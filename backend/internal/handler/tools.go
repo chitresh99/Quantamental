@@ -9,7 +9,9 @@ import (
 	"backend/internal/controllers/sim"
 	"backend/internal/controllers/stats"
 	"backend/internal/controllers/timeseries"
+	"math"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -104,10 +106,36 @@ type MonteCarloRequest struct {
 	Samples    int                    `json:"samples"`
 }
 
+// Simple validation helpers
+func isValidFloat(f float64) bool {
+	return !math.IsNaN(f) && !math.IsInf(f, 0)
+}
+
+func isValidFunction(fn string) bool {
+	fn = strings.TrimSpace(fn)
+	if fn == "" {
+		return false
+	}
+	// Block obvious dangerous patterns
+	dangerous := []string{"import", "os", "exec", "eval", "system"}
+	lower := strings.ToLower(fn)
+	for _, d := range dangerous {
+		if strings.Contains(lower, d) {
+			return false
+		}
+	}
+	return true
+}
+
 func MatrixMultiply(c *gin.Context) {
 	var req MatrixRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if len(req.MatrixA) == 0 || len(req.MatrixB) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "matrices cannot be empty"})
 		return
 	}
 
@@ -127,6 +155,11 @@ func MatrixInverse(c *gin.Context) {
 		return
 	}
 
+	if len(req.Matrix) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "matrix cannot be empty"})
+		return
+	}
+
 	result, err := linear.Inverse(req.Matrix)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -143,6 +176,11 @@ func DescriptiveStats(c *gin.Context) {
 		return
 	}
 
+	if len(req.Data) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "data cannot be empty"})
+		return
+	}
+
 	result := stats.DescriptiveStats(req.Data)
 	c.JSON(http.StatusOK, gin.H{"result": result})
 }
@@ -151,6 +189,16 @@ func Correlation(c *gin.Context) {
 	var req CorrelationRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if len(req.DataX) == 0 || len(req.DataY) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "data cannot be empty"})
+		return
+	}
+
+	if len(req.DataX) != len(req.DataY) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "data arrays must have same length"})
 		return
 	}
 
@@ -170,6 +218,16 @@ func NormalPDF(c *gin.Context) {
 		return
 	}
 
+	if !isValidFloat(req.X) || !isValidFloat(req.Mean) || !isValidFloat(req.Std) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid numeric values"})
+		return
+	}
+
+	if req.Std <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "standard deviation must be positive"})
+		return
+	}
+
 	result := dist.NormalPDF(req.X, req.Mean, req.Std)
 	c.JSON(http.StatusOK, gin.H{"result": result})
 }
@@ -181,6 +239,16 @@ func NormalCDF(c *gin.Context) {
 		return
 	}
 
+	if !isValidFloat(req.X) || !isValidFloat(req.Mean) || !isValidFloat(req.Std) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid numeric values"})
+		return
+	}
+
+	if req.Std <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "standard deviation must be positive"})
+		return
+	}
+
 	result := dist.NormalCDF(req.X, req.Mean, req.Std)
 	c.JSON(http.StatusOK, gin.H{"result": result})
 }
@@ -189,6 +257,16 @@ func MovingAverage(c *gin.Context) {
 	var req MovingAverageRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if len(req.Data) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "data cannot be empty"})
+		return
+	}
+
+	if req.Window <= 0 || req.Window > len(req.Data) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid window size"})
 		return
 	}
 
@@ -208,6 +286,16 @@ func ExponentialAverage(c *gin.Context) {
 		return
 	}
 
+	if len(req.Data) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "data cannot be empty"})
+		return
+	}
+
+	if req.Alpha <= 0 || req.Alpha >= 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "alpha must be between 0 and 1"})
+		return
+	}
+
 	result := timeseries.ExponentialMovingAverage(req.Data, req.Alpha)
 	c.JSON(http.StatusOK, gin.H{"result": result})
 }
@@ -216,6 +304,21 @@ func GoldenSectionSearch(c *gin.Context) {
 	var req OptimizationRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !isValidFunction(req.Function) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid function"})
+		return
+	}
+
+	if req.Lower >= req.Upper {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "lower bound must be less than upper bound"})
+		return
+	}
+
+	if req.Tol <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "tolerance must be positive"})
 		return
 	}
 
@@ -232,6 +335,16 @@ func BlackScholes(c *gin.Context) {
 	var req BlackScholesRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if req.S <= 0 || req.K <= 0 || req.T <= 0 || req.V <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "financial parameters must be positive"})
+		return
+	}
+
+	if req.R < 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "risk-free rate cannot be negative"})
 		return
 	}
 
@@ -256,6 +369,11 @@ func ImpliedVolatility(c *gin.Context) {
 		return
 	}
 
+	if req.S <= 0 || req.K <= 0 || req.T <= 0 || req.MarketPrice <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "financial parameters must be positive"})
+		return
+	}
+
 	result, err := finmath.ImpliedVolatility(req.S, req.K, req.T, req.R, req.MarketPrice, req.IsCall)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -269,6 +387,16 @@ func NumericalDerivative(c *gin.Context) {
 	var req DerivativeRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !isValidFunction(req.Function) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid function"})
+		return
+	}
+
+	if req.H <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "step size must be positive"})
 		return
 	}
 
@@ -288,6 +416,21 @@ func NumericalIntegral(c *gin.Context) {
 		return
 	}
 
+	if !isValidFunction(req.Function) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid function"})
+		return
+	}
+
+	if req.Lower >= req.Upper {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "lower bound must be less than upper bound"})
+		return
+	}
+
+	if req.N <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "intervals must be positive"})
+		return
+	}
+
 	result, err := calculus.TrapezoidalRule(req.Lower, req.Upper, req.N)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -301,6 +444,16 @@ func MonteCarlo(c *gin.Context) {
 	var req MonteCarloRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !isValidFunction(req.Function) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid function"})
+		return
+	}
+
+	if req.Samples <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "samples must be positive"})
 		return
 	}
 
