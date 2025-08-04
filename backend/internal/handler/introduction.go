@@ -8,7 +8,7 @@ import (
 
 func Introduction(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Welcome to Quantamental's mathematical tools",
+		"message": "Welcome to Quantamental's tools",
 		"endpoints": []string{
 			"/api/linear/matrix-multiply",
 			"/api/linear/matrix-inverse",
@@ -24,6 +24,8 @@ func Introduction(c *gin.Context) {
 			"/api/calculus/derivative",
 			"/api/calculus/integral",
 			"/api/sim/monte-carlo",
+			"/api/finance/news",
+			"/api/finance/sources",
 		},
 	})
 }

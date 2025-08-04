@@ -17,6 +17,7 @@ func SetupRouter() *gin.Engine {
 	finMathHandler := handler.NewFinMathHandler()
 	calculusHandler := handler.NewCalculusHandler()
 	simHandler := handler.NewSimulationHandler()
+	financeNewsHandler := handler.NewFinanceNewsHandler()
 
 	// API routes
 	api := r.Group("/api")
@@ -76,6 +77,13 @@ func SetupRouter() *gin.Engine {
 		sim := api.Group("/sim")
 		{
 			sim.POST("/monte-carlo", simHandler.MonteCarlo)
+		}
+
+		finance := api.Group("/finance")
+		{
+			finance.GET("/news", financeNewsHandler.GetFinanceNews)
+			finance.POST("/search", financeNewsHandler.SearchFinanceNews)
+			finance.GET("/sources", financeNewsHandler.GetFinanceSources)
 		}
 	}
 
