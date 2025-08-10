@@ -1,103 +1,85 @@
-import Image from "next/image";
+import Navbar from '../components/navbar'
+import HeroSection from '../components/herosection'
+import FeaturesSection from '../components/featuresection'
+import Footer from '../components/footer'
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600">
+      <Navbar />
+      <HeroSection />
+      <FeaturesSection />
+      <Footer />
     </div>
-  );
+  )
 }
+
+/*
+=== TAILWINDCSS UTILITY DOCUMENTATION ===
+
+GRADIENT BACKGROUNDS:
+- bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600
+  Creates a beautiful multi-stop diagonal gradient from deep navy to medium blue
+
+TRANSPARENCY & GLASSMORPHISM:
+- bg-white/10, bg-white/15, bg-white/5
+  Semi-transparent white overlays for glassmorphic effect (10%, 15%, 5% opacity)
+- border-blue-500/30
+  30% transparent blue borders for subtle definition
+
+BACKDROP BLUR:
+- backdrop-blur-sm
+  Creates the signature glass effect by blurring background content
+
+SHADOWS:
+- shadow-lg
+  Large shadow for card depth
+- hover:shadow-xl
+  Enhanced shadow on hover for interactive feedback
+
+SPACING:
+- px-6 py-20
+  Horizontal padding 1.5rem, vertical padding 5rem
+- px-8 py-3
+  Button padding for optimal touch targets
+- gap-8, gap-x-6
+  Grid and flex gaps for consistent spacing
+
+TYPOGRAPHY:
+- tracking-tight
+  Reduced letter spacing for modern headlines
+- font-extrabold, font-bold, font-semibold
+  Font weight hierarchy for visual importance
+- text-4xl sm:text-5xl lg:text-6xl
+  Responsive text sizing that scales with viewport
+
+RESPONSIVE GRIDS:
+- md:grid-cols-3
+  Three-column grid on medium screens and up
+- grid gap-8
+  Consistent 2rem spacing between grid items
+
+HOVER TRANSITIONS:
+- hover:text-white transition-colors duration-200
+  Smooth color transitions on hover (200ms)
+- hover:bg-blue-700 transition-all duration-300
+  All-property transitions for button interactions
+- group hover:shadow-xl hover:bg-white/15
+  Card hover states with multiple property changes
+
+POSITIONING:
+- sticky top-0 z-50
+  Sticky navigation that stays at viewport top with high z-index
+- mx-auto max-w-7xl
+  Centered content with maximum width constraint
+
+FLEXBOX:
+- flex items-center justify-between
+  Common pattern for navbar layout
+- flex-col items-center justify-between gap-4 sm:flex-row
+  Responsive flex direction change
+
+TEXT EFFECTS:
+- bg-gradient-to-r from-blue-200 to-white bg-clip-text text-transparent
+  Gradient text effect for visual interest
+*/
