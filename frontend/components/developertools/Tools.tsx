@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calculator, TrendingUp, BarChart3, Zap, Brain, Target, ChevronRight, Copy, Check } from 'lucide-react';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = "https://quantamental-backend.onrender.com/";
 
 // Type definitions
 interface ApiResult {
