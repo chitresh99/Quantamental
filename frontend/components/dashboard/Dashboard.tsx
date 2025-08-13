@@ -11,7 +11,7 @@ interface Service {
 
 const services: Service[] = [
   { title: "ML and AI Services", route: "/ml-ai" },
-  { title: "Developer Tools", route: "/developer-tools" },
+  { title: "Developer Tools", route: "/developertool" },
   { title: "CLI", route: "/cli" },
 ];
 
@@ -21,7 +21,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 px-6 py-20">
       <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-center mb-16 text-white">
-        Quantamental's Dashboard
+        Quantamental&apos;s Dashboard
       </h1>
 
       <div className="grid gap-8 md:grid-cols-3 max-w-7xl mx-auto">
