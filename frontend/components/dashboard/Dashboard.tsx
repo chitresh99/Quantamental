@@ -12,7 +12,7 @@ interface Service {
 const services: Service[] = [
   { title: "ML and AI Services", route: "/ml-ai" },
   { title: "Developer Tools", route: "/developerdash" },
-  { title: "CLI", route: "/cli" },
+  { title: "CLI", route: "/clidash" },
 ];
 
 export default function Dashboard() {

@@ -15,6 +15,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		allowedOrigins := []string{
 			"http://localhost:3000",
 			"https://quantamental.vercel.app",
+			"https://quantamental.vercel.app/developertool",
 		}
 
 		// Check if the origin is allowed
