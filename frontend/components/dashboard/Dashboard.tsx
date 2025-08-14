@@ -11,7 +11,7 @@ interface Service {
 
 const services: Service[] = [
   { title: "ML and AI Services", route: "/ml-ai" },
-  { title: "Developer Tools", route: "/developertool" },
+  { title: "Developer Tools", route: "/developerdash" },
   { title: "CLI", route: "/cli" },
 ];
 
@@ -37,7 +37,9 @@ export default function Dashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <button className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg hover:from-blue-600 hover:to-blue-800 transition-all duration-300">
+              <button
+                className="w-full flex items-center justify-center gap-2 border border-blue-500/30 bg-white/10 text-white font-semibold rounded-lg hover:bg-blue-700 hover:border-blue-500 transition-all duration-300"
+              >
                 Go
                 <ArrowRight className="w-5 h-5" />
               </button>
