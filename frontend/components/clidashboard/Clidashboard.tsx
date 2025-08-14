@@ -157,7 +157,7 @@ const CLIdash: React.FC = () => {
             <Button
               variant="outline"
               className="w-full bg-transparent border-blue-500/30 text-blue-200 hover:bg-blue-700/20 hover:border-blue-400/50 transition-all duration-200"
-              onClick={() => window.open('https://github.com/quantamental', '_blank')}
+              onClick={() => window.open('https://github.com/chitresh99/quantamental', '_blank')}
             >
               <Github className="w-4 h-4 mr-2" />
               Go to Quantamental GitHub Repo
