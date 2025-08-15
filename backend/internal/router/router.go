@@ -8,35 +8,34 @@ import (
 )
 
 func CORSMiddleware() gin.HandlerFunc {
-	return gin.HandlerFunc(func(c *gin.Context) {
+	// Allowed origins for both local and production
+	allowedOrigins := map[string]bool{
+		"http://localhost:3000":           true, // Local Next.js dev
+		"https://quantamental.vercel.app": true, // Production frontend
+	}
+
+	return func(c *gin.Context) {
 		origin := c.Request.Header.Get("Origin")
 
-		// List of allowed origins
-		allowedOrigins := []string{
-			"http://localhost:3000",
-			"https://quantamental.vercel.app",
-			"https://quantamental.vercel.app/developertool",
-		}
-
-		// Check if the origin is allowed
-		for _, allowedOrigin := range allowedOrigins {
-			if origin == allowedOrigin {
-				c.Header("Access-Control-Allow-Origin", origin)
-				break
-			}
+		// If origin is in allowed list, set the header
+		if allowedOrigins[origin] {
+			c.Header("Access-Control-Allow-Origin", origin)
 		}
 
 		c.Header("Access-Control-Allow-Credentials", "true")
-		c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Header("Access-Control-Allow-Methods", "POST, HEAD, PATCH, OPTIONS, GET, PUT, DELETE")
+		c.Header("Access-Control-Allow-Headers",
+			"Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Header("Access-Control-Allow-Methods",
+			"POST, HEAD, PATCH, OPTIONS, GET, PUT, DELETE")
 
-		if c.Request.Method == "OPTIONS" {
+		// Handle preflight request
+		if c.Request.Method == http.MethodOptions {
 			c.AbortWithStatus(http.StatusNoContent)
 			return
 		}
 
 		c.Next()
-	})
+	}
 }
 
 func SetupRouter() *gin.Engine {
