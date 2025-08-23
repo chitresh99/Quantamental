@@ -2,11 +2,9 @@
 
 ## Services
 
-* Stock price prediction
-* Stock price comparission with multiple quant algorithms
+* Stock price comparision with multiple quant algorithms
 * Stock recommendation
-* Portfolio construction (ai based)
-* Chatbot
+* AI based investment suggestions
 * Mathematical tools for quants
 * News and sentiments
-* CLI DASHBOARD
+* CLI

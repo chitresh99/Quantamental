@@ -1,6 +1,6 @@
 # Quantamental
 
-## Tech stack (v1)
+## Tech stack
 
 * Frontend
 
@@ -23,9 +23,3 @@
 *  CLI
     
     * Language : Rust
-    * Library : tui-rs
-
-* API Documentation
-
-    * Openapi 
-
