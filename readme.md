@@ -1,7 +1,3 @@
-Got it ✅ — here’s a polished **full README** for your project, with the disclaimer and proper structure included:
-
----
-
 # Quantamental (WIP)
 
 ## Overview
