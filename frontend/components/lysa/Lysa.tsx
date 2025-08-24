@@ -1,8 +1,20 @@
-"use client"
-import React, { useState } from 'react';
-import { TrendingUp, DollarSign, Target, AlertTriangle, CheckCircle, ArrowRight, BarChart3, PieChart, Wallet, Brain, Shield, Calendar, Download } from 'lucide-react';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_AI_URL;
+"use client";
+import React, { useState } from "react";
+import {
+  TrendingUp,
+  DollarSign,
+  Target,
+  AlertTriangle,
+  CheckCircle,
+  ArrowRight,
+  BarChart3,
+  PieChart,
+  Wallet,
+  Brain,
+  Shield,
+  Calendar,
+  Download,
+} from "lucide-react";
 
 interface UserData {
   age: string;
@@ -62,7 +74,7 @@ const Header = ({ onNewAnalysis }: { onNewAnalysis?: () => void }) => (
             <span className="text-sm">Secure & Private</span>
           </div>
           {onNewAnalysis && (
-            <button 
+            <button
               onClick={onNewAnalysis}
               className="px-6 py-2 bg-white/15 hover:bg-white/25 text-white rounded-lg transition-all duration-300 font-semibold"
             >
@@ -76,7 +88,13 @@ const Header = ({ onNewAnalysis }: { onNewAnalysis?: () => void }) => (
 );
 
 // Custom Select Component
-const CustomSelect = ({ value, onChange, options, placeholder, className = "" }: {
+const CustomSelect = ({
+  value,
+  onChange,
+  options,
+  placeholder,
+  className = "",
+}: {
   value: string;
   onChange: (value: string) => void;
   options: { value: string; label: string }[];
@@ -93,11 +111,17 @@ const CustomSelect = ({ value, onChange, options, placeholder, className = "" }:
         className="w-full px-4 py-3 bg-white/10 border border-blue-500/30 rounded-xl text-white text-left focus:outline-none focus:border-blue-400 transition-colors duration-200 flex justify-between items-center"
       >
         <span className={value ? "text-white" : "text-blue-300"}>
-          {value ? options.find(opt => opt.value === value)?.label : placeholder}
+          {value
+            ? options.find((opt) => opt.value === value)?.label
+            : placeholder}
         </span>
-        <ArrowRight className={`w-4 h-4 text-blue-300 transform transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`} />
+        <ArrowRight
+          className={`w-4 h-4 text-blue-300 transform transition-transform duration-200 ${
+            isOpen ? "rotate-90" : ""
+          }`}
+        />
       </button>
-      
+
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-slate-800/95 backdrop-blur-sm border border-blue-500/30 rounded-xl shadow-xl z-10">
           {options.map((option) => (
@@ -129,112 +153,146 @@ const HeroSection = () => (
       </span>
     </h2>
     <p className="text-xl text-blue-200 max-w-3xl mx-auto leading-relaxed">
-      Get personalized investment recommendations based on your profile, goals, and current holdings. 
-      Our AI analyzes your portfolio and provides actionable insights for wealth building.
+      Get personalized investment recommendations based on your profile, goals,
+      and current holdings. Our AI analyzes your portfolio and provides
+      actionable insights for wealth building.
     </p>
   </div>
 );
 
 // User Profile Form Component
-const UserProfileForm = ({ userData, setUserData }: {
+const UserProfileForm = ({
+  userData,
+  setUserData,
+}: {
   userData: UserData;
   setUserData: React.Dispatch<React.SetStateAction<UserData>>;
 }) => {
   const goalOptions = [
-    'wealth_building',
-    'retirement',
-    'education_fund',
-    'home_purchase',
-    'emergency_fund',
-    'passive_income'
+    "wealth_building",
+    "retirement",
+    "education_fund",
+    "home_purchase",
+    "emergency_fund",
+    "passive_income",
   ];
 
   const handleGoalChange = (goal: string, checked: boolean) => {
     if (checked) {
-      setUserData({...userData, investment_goals: [...userData.investment_goals, goal]});
+      setUserData({
+        ...userData,
+        investment_goals: [...userData.investment_goals, goal],
+      });
     } else {
-      setUserData({...userData, investment_goals: userData.investment_goals.filter(g => g !== goal)});
+      setUserData({
+        ...userData,
+        investment_goals: userData.investment_goals.filter((g) => g !== goal),
+      });
     }
   };
 
   const experienceOptions = [
-    { value: '', label: 'Select experience level' },
-    { value: 'beginner', label: 'Beginner' },
-    { value: 'intermediate', label: 'Intermediate' },
-    { value: 'advanced', label: 'Advanced' }
+    { value: "", label: "Select experience level" },
+    { value: "beginner", label: "Beginner" },
+    { value: "intermediate", label: "Intermediate" },
+    { value: "advanced", label: "Advanced" },
   ];
 
   const riskOptions = [
-    { value: '', label: 'Select risk tolerance' },
-    { value: 'conservative', label: 'Conservative' },
-    { value: 'moderate', label: 'Moderate' },
-    { value: 'aggressive', label: 'Aggressive' }
+    { value: "", label: "Select risk tolerance" },
+    { value: "conservative", label: "Conservative" },
+    { value: "moderate", label: "Moderate" },
+    { value: "aggressive", label: "Aggressive" },
   ];
 
   return (
     <div className="mb-8">
-      <h4 className="text-xl font-semibold text-blue-200 mb-6">Personal Information</h4>
+      <h4 className="text-xl font-semibold text-blue-200 mb-6">
+        Personal Information
+      </h4>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div>
-          <label className="block text-blue-200 text-sm font-semibold mb-2">Age</label>
+          <label className="block text-blue-200 text-sm font-semibold mb-2">
+            Age
+          </label>
           <input
             type="number"
             value={userData.age}
-            onChange={(e) => setUserData({...userData, age: e.target.value})}
+            onChange={(e) => setUserData({ ...userData, age: e.target.value })}
             className="w-full px-4 py-3 bg-white/10 border border-blue-500/30 rounded-xl text-white placeholder-blue-300 focus:outline-none focus:border-blue-400 transition-colors duration-200"
             placeholder="28"
           />
         </div>
 
         <div>
-          <label className="block text-blue-200 text-sm font-semibold mb-2">Annual Income ($)</label>
+          <label className="block text-blue-200 text-sm font-semibold mb-2">
+            Annual Income ($)
+          </label>
           <input
             type="number"
             value={userData.annual_income}
-            onChange={(e) => setUserData({...userData, annual_income: e.target.value})}
+            onChange={(e) =>
+              setUserData({ ...userData, annual_income: e.target.value })
+            }
             className="w-full px-4 py-3 bg-white/10 border border-blue-500/30 rounded-xl text-white placeholder-blue-300 focus:outline-none focus:border-blue-400 transition-colors duration-200"
             placeholder="75000"
           />
         </div>
 
         <div>
-          <label className="block text-blue-200 text-sm font-semibold mb-2">Investment Experience</label>
+          <label className="block text-blue-200 text-sm font-semibold mb-2">
+            Investment Experience
+          </label>
           <CustomSelect
             value={userData.investment_experience}
-            onChange={(value) => setUserData({...userData, investment_experience: value})}
+            onChange={(value) =>
+              setUserData({ ...userData, investment_experience: value })
+            }
             options={experienceOptions}
             placeholder="Select experience level"
           />
         </div>
 
         <div>
-          <label className="block text-blue-200 text-sm font-semibold mb-2">Risk Tolerance</label>
+          <label className="block text-blue-200 text-sm font-semibold mb-2">
+            Risk Tolerance
+          </label>
           <CustomSelect
             value={userData.risk_tolerance}
-            onChange={(value) => setUserData({...userData, risk_tolerance: value})}
+            onChange={(value) =>
+              setUserData({ ...userData, risk_tolerance: value })
+            }
             options={riskOptions}
             placeholder="Select risk tolerance"
           />
         </div>
 
         <div>
-          <label className="block text-blue-200 text-sm font-semibold mb-2">Time Horizon (years)</label>
+          <label className="block text-blue-200 text-sm font-semibold mb-2">
+            Time Horizon (years)
+          </label>
           <input
             type="number"
             value={userData.time_horizon}
-            onChange={(e) => setUserData({...userData, time_horizon: e.target.value})}
+            onChange={(e) =>
+              setUserData({ ...userData, time_horizon: e.target.value })
+            }
             className="w-full px-4 py-3 bg-white/10 border border-blue-500/30 rounded-xl text-white placeholder-blue-300 focus:outline-none focus:border-blue-400 transition-colors duration-200"
             placeholder="35"
           />
         </div>
 
         <div>
-          <label className="block text-blue-200 text-sm font-semibold mb-2">Liquidity Needs (%)</label>
+          <label className="block text-blue-200 text-sm font-semibold mb-2">
+            Liquidity Needs (%)
+          </label>
           <input
             type="number"
             step="0.1"
             value={userData.liquidity_needs}
-            onChange={(e) => setUserData({...userData, liquidity_needs: e.target.value})}
+            onChange={(e) =>
+              setUserData({ ...userData, liquidity_needs: e.target.value })
+            }
             className="w-full px-4 py-3 bg-white/10 border border-blue-500/30 rounded-xl text-white placeholder-blue-300 focus:outline-none focus:border-blue-400 transition-colors duration-200"
             placeholder="5.0"
           />
@@ -242,27 +300,38 @@ const UserProfileForm = ({ userData, setUserData }: {
       </div>
 
       <div className="mt-6">
-        <label className="block text-blue-200 text-sm font-semibold mb-2">Investment Goals</label>
+        <label className="block text-blue-200 text-sm font-semibold mb-2">
+          Investment Goals
+        </label>
         <div className="grid md:grid-cols-3 gap-3">
           {goalOptions.map((goal) => (
-            <label key={goal} className="flex items-center gap-2 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors duration-200 cursor-pointer">
+            <label
+              key={goal}
+              className="flex items-center gap-2 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors duration-200 cursor-pointer"
+            >
               <input
                 type="checkbox"
                 checked={userData.investment_goals.includes(goal)}
                 onChange={(e) => handleGoalChange(goal, e.target.checked)}
                 className="rounded border-blue-500/30 bg-white/10 text-blue-500"
               />
-              <span className="text-blue-200 capitalize">{goal.replace('_', ' ')}</span>
+              <span className="text-blue-200 capitalize">
+                {goal.replace("_", " ")}
+              </span>
             </label>
           ))}
         </div>
       </div>
 
       <div className="mt-6">
-        <label className="block text-blue-200 text-sm font-semibold mb-2">Additional Context</label>
+        <label className="block text-blue-200 text-sm font-semibold mb-2">
+          Additional Context
+        </label>
         <textarea
           value={userData.additional_context}
-          onChange={(e) => setUserData({...userData, additional_context: e.target.value})}
+          onChange={(e) =>
+            setUserData({ ...userData, additional_context: e.target.value })
+          }
           className="w-full px-4 py-3 bg-white/10 border border-blue-500/30 rounded-xl text-white placeholder-blue-300 focus:outline-none focus:border-blue-400 transition-colors duration-200 h-24 resize-none"
           placeholder="Tell us more about your investment goals and situation..."
         />
@@ -272,24 +341,34 @@ const UserProfileForm = ({ userData, setUserData }: {
 };
 
 // Holdings Component
-const HoldingsForm = ({ holdings, setHoldings }: {
+const HoldingsForm = ({
+  holdings,
+  setHoldings,
+}: {
   holdings: Holding[];
   setHoldings: React.Dispatch<React.SetStateAction<Holding[]>>;
 }) => {
   const addHolding = () => {
-    setHoldings([...holdings, {
-      symbol: '',
-      name: '',
-      asset_type: 'stock',
-      quantity: '',
-      current_price: '',
-      purchase_price: '',
-      purchase_date: ''
-    }]);
+    setHoldings([
+      ...holdings,
+      {
+        symbol: "",
+        name: "",
+        asset_type: "stock",
+        quantity: "",
+        current_price: "",
+        purchase_price: "",
+        purchase_date: "",
+      },
+    ]);
   };
 
-  const updateHolding = (index: number, field: keyof Holding, value: string) => {
-    const updated = holdings.map((holding, i) => 
+  const updateHolding = (
+    index: number,
+    field: keyof Holding,
+    value: string
+  ) => {
+    const updated = holdings.map((holding, i) =>
       i === index ? { ...holding, [field]: value } : holding
     );
     setHoldings(updated);
@@ -300,16 +379,18 @@ const HoldingsForm = ({ holdings, setHoldings }: {
   };
 
   const assetTypeOptions = [
-    { value: 'stock', label: 'Stock' },
-    { value: 'crypto', label: 'Crypto' },
-    { value: 'bond', label: 'Bond' },
-    { value: 'etf', label: 'ETF' }
+    { value: "stock", label: "Stock" },
+    { value: "crypto", label: "Crypto" },
+    { value: "bond", label: "Bond" },
+    { value: "etf", label: "ETF" },
   ];
 
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-6">
-        <h4 className="text-xl font-semibold text-blue-200">Current Holdings</h4>
+        <h4 className="text-xl font-semibold text-blue-200">
+          Current Holdings
+        </h4>
         <button
           onClick={addHolding}
           className="px-6 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-300 rounded-lg transition-all duration-300 font-semibold border border-green-500/30"
@@ -321,40 +402,61 @@ const HoldingsForm = ({ holdings, setHoldings }: {
       {holdings.length === 0 ? (
         <div className="text-center py-12 text-blue-300">
           <Wallet className="w-12 h-12 mx-auto mb-4 opacity-50" />
-          <p className="text-lg">No holdings added yet. Click "Add Holding" to get started.</p>
+          <p className="text-lg">
+            No holdings added yet. Click "Add Holding" to get started.
+          </p>
         </div>
       ) : (
         <div className="space-y-4">
           {holdings.map((holding, index) => (
-            <div key={index} className="bg-white/5 rounded-xl p-6 border border-blue-500/20">
+            <div
+              key={index}
+              className="bg-white/5 rounded-xl p-6 border border-blue-500/20"
+            >
               <div className="grid md:grid-cols-4 lg:grid-cols-8 gap-4">
                 <div>
-                  <label className="block text-blue-200 text-sm font-semibold mb-2">Symbol</label>
+                  <label className="block text-blue-200 text-sm font-semibold mb-2">
+                    Symbol
+                  </label>
                   <input
                     type="text"
                     value={holding.symbol}
-                    onChange={(e) => updateHolding(index, 'symbol', e.target.value.toUpperCase())}
+                    onChange={(e) =>
+                      updateHolding(
+                        index,
+                        "symbol",
+                        e.target.value.toUpperCase()
+                      )
+                    }
                     className="w-full px-3 py-2 bg-white/10 border border-blue-500/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-blue-400 transition-colors duration-200"
                     placeholder="TSLA"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-blue-200 text-sm font-semibold mb-2">Name</label>
+                  <label className="block text-blue-200 text-sm font-semibold mb-2">
+                    Name
+                  </label>
                   <input
                     type="text"
                     value={holding.name}
-                    onChange={(e) => updateHolding(index, 'name', e.target.value)}
+                    onChange={(e) =>
+                      updateHolding(index, "name", e.target.value)
+                    }
                     className="w-full px-3 py-2 bg-white/10 border border-blue-500/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-blue-400 transition-colors duration-200"
                     placeholder="Tesla Inc"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-blue-200 text-sm font-semibold mb-2">Type</label>
+                  <label className="block text-blue-200 text-sm font-semibold mb-2">
+                    Type
+                  </label>
                   <CustomSelect
                     value={holding.asset_type}
-                    onChange={(value) => updateHolding(index, 'asset_type', value)}
+                    onChange={(value) =>
+                      updateHolding(index, "asset_type", value)
+                    }
                     options={assetTypeOptions}
                     placeholder="Select type"
                     className="w-full"
@@ -362,47 +464,63 @@ const HoldingsForm = ({ holdings, setHoldings }: {
                 </div>
 
                 <div>
-                  <label className="block text-blue-200 text-sm font-semibold mb-2">Quantity</label>
+                  <label className="block text-blue-200 text-sm font-semibold mb-2">
+                    Quantity
+                  </label>
                   <input
                     type="number"
                     step="0.001"
                     value={holding.quantity}
-                    onChange={(e) => updateHolding(index, 'quantity', e.target.value)}
+                    onChange={(e) =>
+                      updateHolding(index, "quantity", e.target.value)
+                    }
                     className="w-full px-3 py-2 bg-white/10 border border-blue-500/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-blue-400 transition-colors duration-200"
                     placeholder="10"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-blue-200 text-sm font-semibold mb-2">Current Price</label>
+                  <label className="block text-blue-200 text-sm font-semibold mb-2">
+                    Current Price
+                  </label>
                   <input
                     type="number"
                     step="0.01"
                     value={holding.current_price}
-                    onChange={(e) => updateHolding(index, 'current_price', e.target.value)}
+                    onChange={(e) =>
+                      updateHolding(index, "current_price", e.target.value)
+                    }
                     className="w-full px-3 py-2 bg-white/10 border border-blue-500/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-blue-400 transition-colors duration-200"
                     placeholder="210.00"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-blue-200 text-sm font-semibold mb-2">Purchase Price</label>
+                  <label className="block text-blue-200 text-sm font-semibold mb-2">
+                    Purchase Price
+                  </label>
                   <input
                     type="number"
                     step="0.01"
                     value={holding.purchase_price}
-                    onChange={(e) => updateHolding(index, 'purchase_price', e.target.value)}
+                    onChange={(e) =>
+                      updateHolding(index, "purchase_price", e.target.value)
+                    }
                     className="w-full px-3 py-2 bg-white/10 border border-blue-500/30 rounded-lg text-white placeholder-blue-300 focus:outline-none focus:border-blue-400 transition-colors duration-200"
                     placeholder="180.00"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-blue-200 text-sm font-semibold mb-2">Purchase Date</label>
+                  <label className="block text-blue-200 text-sm font-semibold mb-2">
+                    Purchase Date
+                  </label>
                   <input
                     type="date"
                     value={holding.purchase_date}
-                    onChange={(e) => updateHolding(index, 'purchase_date', e.target.value)}
+                    onChange={(e) =>
+                      updateHolding(index, "purchase_date", e.target.value)
+                    }
                     className="w-full px-3 py-2 bg-white/10 border border-blue-500/30 rounded-lg text-white focus:outline-none focus:border-blue-400 transition-colors duration-200 [color-scheme:dark]"
                   />
                 </div>
@@ -430,15 +548,18 @@ const FeaturesSection = () => (
     <h3 className="text-3xl font-bold text-white text-center mb-12">
       Why Choose Lysa AI?
     </h3>
-    
+
     <div className="grid md:grid-cols-3 gap-8">
       <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-blue-500/30 p-8 text-center shadow-lg hover:shadow-xl hover:bg-white/15 transition-all duration-300 group">
         <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
           <Brain className="w-8 h-8 text-white" />
         </div>
-        <h4 className="text-xl font-bold text-white mb-4">AI-Powered Analysis</h4>
+        <h4 className="text-xl font-bold text-white mb-4">
+          AI-Powered Analysis
+        </h4>
         <p className="text-blue-200 leading-relaxed">
-          Advanced algorithms analyze your portfolio against market data and risk factors to provide personalized recommendations.
+          Advanced algorithms analyze your portfolio against market data and
+          risk factors to provide personalized recommendations.
         </p>
       </div>
 
@@ -448,7 +569,8 @@ const FeaturesSection = () => (
         </div>
         <h4 className="text-xl font-bold text-white mb-4">Risk Management</h4>
         <p className="text-blue-200 leading-relaxed">
-          Comprehensive risk assessment including diversification scoring, volatility analysis, and concentration risk evaluation.
+          Comprehensive risk assessment including diversification scoring,
+          volatility analysis, and concentration risk evaluation.
         </p>
       </div>
 
@@ -456,9 +578,12 @@ const FeaturesSection = () => (
         <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
           <Target className="w-8 h-8 text-white" />
         </div>
-        <h4 className="text-xl font-bold text-white mb-4">Goal-Oriented Strategy</h4>
+        <h4 className="text-xl font-bold text-white mb-4">
+          Goal-Oriented Strategy
+        </h4>
         <p className="text-blue-200 leading-relaxed">
-          Tailored recommendations based on your specific goals, timeline, and financial situation for optimal wealth building.
+          Tailored recommendations based on your specific goals, timeline, and
+          financial situation for optimal wealth building.
         </p>
       </div>
     </div>
@@ -466,7 +591,10 @@ const FeaturesSection = () => (
 );
 
 // Results Dashboard Component
-const ResultsDashboard = ({ analysisResult, onNewAnalysis }: {
+const ResultsDashboard = ({
+  analysisResult,
+  onNewAnalysis,
+}: {
   analysisResult: AnalysisResult;
   onNewAnalysis: () => void;
 }) => {
@@ -478,7 +606,7 @@ Generated: ${new Date().toLocaleDateString()}
 ${analysisResult.analysis}
 
 KEY RECOMMENDATIONS:
-${analysisResult.recommendations.map((rec, i) => `${i + 1}. ${rec}`).join('\n')}
+${analysisResult.recommendations.map((rec, i) => `${i + 1}. ${rec}`).join("\n")}
 
 RISK ASSESSMENT:
 ${analysisResult.risk_assessment}
@@ -489,17 +617,19 @@ SUGGESTED ALLOCATION:
 - Alternatives: ${analysisResult.suggested_allocations.alternatives}%
 
 NEXT STEPS:
-${analysisResult.next_steps.map((step, i) => `${i + 1}. ${step}`).join('\n')}
+${analysisResult.next_steps.map((step, i) => `${i + 1}. ${step}`).join("\n")}
 
 Confidence Score: ${Math.round(analysisResult.confidence_score * 100)}%
 Diversification Score: ${analysisResult.diversification_score}/10
 `;
 
-    const blob = new Blob([reportContent], { type: 'text/plain' });
+    const blob = new Blob([reportContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `lysa-investment-report-${new Date().toISOString().split('T')[0]}.txt`;
+    a.download = `lysa-investment-report-${
+      new Date().toISOString().split("T")[0]
+    }.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -512,9 +642,11 @@ Diversification Score: ${analysisResult.diversification_score}/10
       <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-blue-500/30 p-8 mb-8 shadow-lg">
         <div className="flex items-center gap-3 mb-6">
           <TrendingUp className="w-8 h-8 text-blue-200" />
-          <h2 className="text-3xl font-bold text-white">Investment Analysis Report</h2>
+          <h2 className="text-3xl font-bold text-white">
+            Investment Analysis Report
+          </h2>
         </div>
-        
+
         <div className="grid md:grid-cols-4 gap-6 mb-6">
           <div className="bg-white/5 rounded-xl p-4 border border-blue-500/20">
             <div className="flex items-center gap-2 mb-2">
@@ -523,15 +655,17 @@ Diversification Score: ${analysisResult.diversification_score}/10
             </div>
             <span className="text-2xl font-bold text-white">$8,850</span>
           </div>
-          
+
           <div className="bg-white/5 rounded-xl p-4 border border-blue-500/20">
             <div className="flex items-center gap-2 mb-2">
               <PieChart className="w-5 h-5 text-blue-200" />
               <span className="text-blue-200 text-sm">Diversification</span>
             </div>
-            <span className="text-2xl font-bold text-white">{analysisResult.diversification_score}/10</span>
+            <span className="text-2xl font-bold text-white">
+              {analysisResult.diversification_score}/10
+            </span>
           </div>
-          
+
           <div className="bg-white/5 rounded-xl p-4 border border-blue-500/20">
             <div className="flex items-center gap-2 mb-2">
               <BarChart3 className="w-5 h-5 text-blue-200" />
@@ -539,13 +673,15 @@ Diversification Score: ${analysisResult.diversification_score}/10
             </div>
             <span className="text-2xl font-bold text-white">10.6%</span>
           </div>
-          
+
           <div className="bg-white/5 rounded-xl p-4 border border-blue-500/20">
             <div className="flex items-center gap-2 mb-2">
               <Shield className="w-5 h-5 text-blue-200" />
               <span className="text-blue-200 text-sm">Confidence</span>
             </div>
-            <span className="text-2xl font-bold text-white">{Math.round(analysisResult.confidence_score * 100)}%</span>
+            <span className="text-2xl font-bold text-white">
+              {Math.round(analysisResult.confidence_score * 100)}%
+            </span>
           </div>
         </div>
 
@@ -553,7 +689,9 @@ Diversification Score: ${analysisResult.diversification_score}/10
           <div className="flex items-start gap-3">
             <AlertTriangle className="w-6 h-6 text-yellow-300 mt-1 flex-shrink-0" />
             <div>
-              <h3 className="text-xl font-bold text-yellow-300 mb-2">Key Insight</h3>
+              <h3 className="text-xl font-bold text-yellow-300 mb-2">
+                Key Insight
+              </h3>
               <p className="text-yellow-100 leading-relaxed">
                 {analysisResult.risk_assessment}
               </p>
@@ -569,7 +707,7 @@ Diversification Score: ${analysisResult.diversification_score}/10
             <PieChart className="w-6 h-6 text-blue-200" />
             Current Allocation
           </h3>
-          
+
           <div className="space-y-4">
             <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl">
               <span className="text-blue-200">Stocks</span>
@@ -591,19 +729,25 @@ Diversification Score: ${analysisResult.diversification_score}/10
             <Target className="w-6 h-6 text-green-300" />
             Recommended Allocation
           </h3>
-          
+
           <div className="space-y-4">
             <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl">
               <span className="text-blue-200">Stocks</span>
-              <span className="text-green-300 font-bold">{analysisResult.suggested_allocations.stocks}%</span>
+              <span className="text-green-300 font-bold">
+                {analysisResult.suggested_allocations.stocks}%
+              </span>
             </div>
             <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl">
               <span className="text-blue-200">Bonds</span>
-              <span className="text-green-300 font-bold">{analysisResult.suggested_allocations.bonds}%</span>
+              <span className="text-green-300 font-bold">
+                {analysisResult.suggested_allocations.bonds}%
+              </span>
             </div>
             <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl">
               <span className="text-blue-200">Alternatives</span>
-              <span className="text-green-300 font-bold">{analysisResult.suggested_allocations.alternatives}%</span>
+              <span className="text-green-300 font-bold">
+                {analysisResult.suggested_allocations.alternatives}%
+              </span>
             </div>
           </div>
         </div>
@@ -615,10 +759,13 @@ Diversification Score: ${analysisResult.diversification_score}/10
           <CheckCircle className="w-6 h-6 text-green-300" />
           Key Recommendations
         </h3>
-        
+
         <div className="grid md:grid-cols-2 gap-4">
           {analysisResult.recommendations.map((rec, index) => (
-            <div key={index} className="flex items-start gap-3 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors duration-200">
+            <div
+              key={index}
+              className="flex items-start gap-3 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors duration-200"
+            >
               <ArrowRight className="w-5 h-5 text-green-300 mt-1 flex-shrink-0" />
               <span className="text-blue-100 leading-relaxed">{rec}</span>
             </div>
@@ -632,10 +779,13 @@ Diversification Score: ${analysisResult.diversification_score}/10
           <Calendar className="w-6 h-6 text-purple-300" />
           Action Plan
         </h3>
-        
+
         <div className="space-y-4">
           {analysisResult.next_steps.map((step, index) => (
-            <div key={index} className="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors duration-200 group">
+            <div
+              key={index}
+              className="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors duration-200 group"
+            >
               <div className="w-8 h-8 bg-purple-500/30 rounded-full flex items-center justify-center text-purple-300 font-bold">
                 {index + 1}
               </div>
@@ -646,13 +796,13 @@ Diversification Score: ${analysisResult.diversification_score}/10
         </div>
 
         <div className="mt-8 flex gap-4">
-          <button 
+          <button
             onClick={onNewAnalysis}
             className="flex-1 px-8 py-3 bg-white/15 hover:bg-white/25 text-white rounded-xl transition-all duration-300 font-semibold"
           >
             Analyze Another Portfolio
           </button>
-          <button 
+          <button
             onClick={downloadReport}
             className="flex-1 px-8 py-3 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white rounded-xl transition-all duration-300 font-semibold flex items-center justify-center gap-2"
           >
@@ -667,69 +817,86 @@ Diversification Score: ${analysisResult.diversification_score}/10
 
 // Main Component
 const LysaInvestmentAdvisor = () => {
-  const [currentPage, setCurrentPage] = useState<'input' | 'results'>('input');
+  const [currentPage, setCurrentPage] = useState<"input" | "results">("input");
   const [userData, setUserData] = useState<UserData>({
-    age: '',
-    annual_income: '',
-    investment_experience: '',
-    risk_tolerance: '',
+    age: "",
+    annual_income: "",
+    investment_experience: "",
+    risk_tolerance: "",
     investment_goals: [],
-    time_horizon: '',
-    liquidity_needs: '',
-    additional_context: ''
+    time_horizon: "",
+    liquidity_needs: "",
+    additional_context: "",
   });
   const [holdings, setHoldings] = useState<Holding[]>([]);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Sample analysis data for demonstration
   const sampleAnalysis: AnalysisResult = {
-    "analysis": "**Lysa Wealth Advisor – Investment Advisory Report**\n**Client:** 28‑year‑old young professional\n**Date:** 24 Aug 2025\n\n---\n\n## Executive Summary\n\nYour current portfolio is heavily tilted toward high-growth tech stocks and crypto, creating significant concentration risk. While this aggressive approach aligns with your risk tolerance and 35-year horizon, diversification improvements are needed to optimize long-term wealth building.\n\n**Key Findings:**\n- Total Portfolio Value: $8,850\n- Current Allocation: 49% stocks, 51% crypto\n- Diversification Score: 5.0/10\n- Annualized Return: 10.6%\n- Risk Level: High\n\n**Bottom Line:** Reduce crypto exposure to 10-15%, diversify equity holdings across sectors and geographies, and add a modest bond allocation for volatility management.",
-    "recommendations": [
+    analysis:
+      "**Lysa Wealth Advisor – Investment Advisory Report**\n**Client:** 28‑year‑old young professional\n**Date:** 24 Aug 2025\n\n---\n\n## Executive Summary\n\nYour current portfolio is heavily tilted toward high-growth tech stocks and crypto, creating significant concentration risk. While this aggressive approach aligns with your risk tolerance and 35-year horizon, diversification improvements are needed to optimize long-term wealth building.\n\n**Key Findings:**\n- Total Portfolio Value: $8,850\n- Current Allocation: 49% stocks, 51% crypto\n- Diversification Score: 5.0/10\n- Annualized Return: 10.6%\n- Risk Level: High\n\n**Bottom Line:** Reduce crypto exposure to 10-15%, diversify equity holdings across sectors and geographies, and add a modest bond allocation for volatility management.",
+    recommendations: [
       "Reduce Bitcoin allocation from 51% to 10-15% of total portfolio",
       "Diversify equity holdings beyond tech sector concentration",
       "Add broad market index funds for better diversification",
       "Consider adding 10-20% bond allocation for volatility dampening",
-      "Implement systematic rebalancing schedule (quarterly)"
+      "Implement systematic rebalancing schedule (quarterly)",
     ],
-    "risk_assessment": "High concentration risk due to 51% crypto allocation and tech sector focus. While aggressive approach suits your profile, current structure creates unnecessary volatility.",
-    "diversification_score": 5.0,
-    "suggested_allocations": {
-      "stocks": 70,
-      "bonds": 20,
-      "alternatives": 10
+    risk_assessment:
+      "High concentration risk due to 51% crypto allocation and tech sector focus. While aggressive approach suits your profile, current structure creates unnecessary volatility.",
+    diversification_score: 5.0,
+    suggested_allocations: {
+      stocks: 70,
+      bonds: 20,
+      alternatives: 10,
     },
-    "next_steps": [
+    next_steps: [
       "Rebalance portfolio within 30 days",
       "Open tax-advantaged accounts (401k, IRA)",
       "Set up automated investing schedule",
       "Review portfolio quarterly",
-      "Build 3-6 month emergency fund"
+      "Build 3-6 month emergency fund",
     ],
-    "confidence_score": 0.85,
-    "timestamp": "2025-08-24T16:56:20.509811"
+    confidence_score: 0.85,
+    timestamp: "2025-08-24T16:56:20.509811",
   };
 
   const handleAnalyze = async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       // Validate required fields
-      if (!userData.age || !userData.annual_income || !userData.investment_experience || 
-          !userData.risk_tolerance || !userData.time_horizon || !userData.liquidity_needs) {
-        throw new Error('Please fill in all required fields');
+      if (
+        !userData.age ||
+        !userData.annual_income ||
+        !userData.investment_experience ||
+        !userData.risk_tolerance ||
+        !userData.time_horizon ||
+        !userData.liquidity_needs
+      ) {
+        throw new Error("Please fill in all required fields");
       }
 
       if (holdings.length === 0) {
-        throw new Error('Please add at least one holding');
+        throw new Error("Please add at least one holding");
       }
 
       // Validate holdings data
       for (const holding of holdings) {
-        if (!holding.symbol || !holding.quantity || !holding.current_price || !holding.purchase_price) {
-          throw new Error('Please fill in all holding fields (symbol, quantity, current price, purchase price)');
+        if (
+          !holding.symbol ||
+          !holding.quantity ||
+          !holding.current_price ||
+          !holding.purchase_price
+        ) {
+          throw new Error(
+            "Please fill in all holding fields (symbol, quantity, current price, purchase price)"
+          );
         }
       }
 
@@ -740,37 +907,57 @@ const LysaInvestmentAdvisor = () => {
           annual_income: parseInt(userData.annual_income),
           investment_experience: userData.investment_experience,
           risk_tolerance: userData.risk_tolerance,
-          investment_goals: userData.investment_goals.length > 0 ? userData.investment_goals : ['wealth_building'],
+          investment_goals:
+            userData.investment_goals.length > 0
+              ? userData.investment_goals
+              : ["wealth_building"],
           time_horizon: parseInt(userData.time_horizon),
-          liquidity_needs: parseFloat(userData.liquidity_needs)
+          liquidity_needs: parseFloat(userData.liquidity_needs),
         },
-        holdings: holdings.map(holding => ({
+        holdings: holdings.map((holding) => ({
           symbol: holding.symbol.trim().toUpperCase(),
           name: holding.name.trim() || holding.symbol.trim().toUpperCase(),
           asset_type: holding.asset_type,
           quantity: parseFloat(holding.quantity),
           current_price: parseFloat(holding.current_price),
           purchase_price: parseFloat(holding.purchase_price),
-          purchase_date: holding.purchase_date || new Date().toISOString().split('T')[0]
+          purchase_date:
+            holding.purchase_date || new Date().toISOString().split("T")[0],
         })),
-        additional_context: userData.additional_context || ''
+        additional_context: userData.additional_context || "",
       };
 
       // Validate parsed numbers
-      if (isNaN(requestData.user_profile.age) || requestData.user_profile.age < 18 || requestData.user_profile.age > 100) {
-        throw new Error('Please enter a valid age between 18 and 100');
-      }
-      
-      if (isNaN(requestData.user_profile.annual_income) || requestData.user_profile.annual_income < 0) {
-        throw new Error('Please enter a valid annual income');
-      }
-
-      if (isNaN(requestData.user_profile.time_horizon) || requestData.user_profile.time_horizon < 1) {
-        throw new Error('Please enter a valid time horizon (at least 1 year)');
+      if (
+        isNaN(requestData.user_profile.age) ||
+        requestData.user_profile.age < 18 ||
+        requestData.user_profile.age > 100
+      ) {
+        throw new Error("Please enter a valid age between 18 and 100");
       }
 
-      if (isNaN(requestData.user_profile.liquidity_needs) || requestData.user_profile.liquidity_needs < 0 || requestData.user_profile.liquidity_needs > 100) {
-        throw new Error('Please enter a valid liquidity needs percentage (0-100)');
+      if (
+        isNaN(requestData.user_profile.annual_income) ||
+        requestData.user_profile.annual_income < 0
+      ) {
+        throw new Error("Please enter a valid annual income");
+      }
+
+      if (
+        isNaN(requestData.user_profile.time_horizon) ||
+        requestData.user_profile.time_horizon < 1
+      ) {
+        throw new Error("Please enter a valid time horizon (at least 1 year)");
+      }
+
+      if (
+        isNaN(requestData.user_profile.liquidity_needs) ||
+        requestData.user_profile.liquidity_needs < 0 ||
+        requestData.user_profile.liquidity_needs > 100
+      ) {
+        throw new Error(
+          "Please enter a valid liquidity needs percentage (0-100)"
+        );
       }
 
       // Validate holdings
@@ -786,16 +973,22 @@ const LysaInvestmentAdvisor = () => {
         }
       }
 
-      console.log('Sending request data:', JSON.stringify(requestData, null, 2));
+      console.log(
+        "Sending request data:",
+        JSON.stringify(requestData, null, 2)
+      );
 
       // Call the backend API
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_AI_URL}/analyze-portfolio`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData)
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_AI_URL}/analyze-portfolio`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
 
       if (!response.ok) {
         // Try to get more detailed error information
@@ -803,7 +996,9 @@ const LysaInvestmentAdvisor = () => {
         try {
           const errorData = await response.json();
           if (errorData.error || errorData.message || errorData.detail) {
-            errorMessage += ` - ${errorData.error || errorData.message || errorData.detail}`;
+            errorMessage += ` - ${
+              errorData.error || errorData.message || errorData.detail
+            }`;
           }
         } catch (parseErr) {
           // If we can't parse the error response, use the original message
@@ -813,17 +1008,24 @@ const LysaInvestmentAdvisor = () => {
 
       const result = await response.json();
       setAnalysisResult(result);
-      setCurrentPage('results');
-      
+      setCurrentPage("results");
     } catch (err) {
-      console.error('Analysis error:', err);
+      console.error("Analysis error:", err);
       // For demo purposes, use sample data when API is not available
-      if (err instanceof Error && (err.message.includes('fetch') || err.message.includes('Failed to fetch'))) {
-        console.log('API not available, using sample data for demo');
+      if (
+        err instanceof Error &&
+        (err.message.includes("fetch") ||
+          err.message.includes("Failed to fetch"))
+      ) {
+        console.log("API not available, using sample data for demo");
         setAnalysisResult(sampleAnalysis);
-        setCurrentPage('results');
+        setCurrentPage("results");
       } else {
-        setError(err instanceof Error ? err.message : 'Failed to analyze portfolio. Please check your connection and try again.');
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to analyze portfolio. Please check your connection and try again."
+        );
       }
     } finally {
       setIsLoading(false);
@@ -832,44 +1034,45 @@ const LysaInvestmentAdvisor = () => {
 
   const loadSampleData = () => {
     setUserData({
-      age: '28',
-      annual_income: '75000',
-      investment_experience: 'beginner',
-      risk_tolerance: 'aggressive',
-      investment_goals: ['wealth_building'],
-      time_horizon: '35',
-      liquidity_needs: '5.0',
-      additional_context: 'Young professional looking to build wealth aggressively over the long term.'
+      age: "28",
+      annual_income: "75000",
+      investment_experience: "beginner",
+      risk_tolerance: "aggressive",
+      investment_goals: ["wealth_building"],
+      time_horizon: "35",
+      liquidity_needs: "5.0",
+      additional_context:
+        "Young professional looking to build wealth aggressively over the long term.",
     });
     setHoldings([
       {
-        symbol: 'TSLA',
-        name: 'Tesla Inc',
-        asset_type: 'stock',
-        quantity: '10',
-        current_price: '210.0',
-        purchase_price: '180.0',
-        purchase_date: '2024-03-01'
+        symbol: "TSLA",
+        name: "Tesla Inc",
+        asset_type: "stock",
+        quantity: "10",
+        current_price: "210.0",
+        purchase_price: "180.0",
+        purchase_date: "2024-03-01",
       },
       {
-        symbol: 'BTC',
-        name: 'Bitcoin',
-        asset_type: 'crypto',
-        quantity: '0.15',
-        current_price: '43500.0',
-        purchase_price: '38000.0',
-        purchase_date: '2024-01-15'
-      }
+        symbol: "BTC",
+        name: "Bitcoin",
+        asset_type: "crypto",
+        quantity: "0.15",
+        current_price: "43500.0",
+        purchase_price: "38000.0",
+        purchase_date: "2024-01-15",
+      },
     ]);
   };
 
-  if (currentPage === 'results' && analysisResult) {
+  if (currentPage === "results" && analysisResult) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600">
-        <Header onNewAnalysis={() => setCurrentPage('input')} />
-        <ResultsDashboard 
-          analysisResult={analysisResult} 
-          onNewAnalysis={() => setCurrentPage('input')} 
+        <Header onNewAnalysis={() => setCurrentPage("input")} />
+        <ResultsDashboard
+          analysisResult={analysisResult}
+          onNewAnalysis={() => setCurrentPage("input")}
         />
       </div>
     );
@@ -912,7 +1115,9 @@ const LysaInvestmentAdvisor = () => {
               <div className="flex items-center gap-3">
                 <AlertTriangle className="w-6 h-6 text-red-300" />
                 <div>
-                  <h4 className="text-lg font-semibold text-red-300">Analysis Error</h4>
+                  <h4 className="text-lg font-semibold text-red-300">
+                    Analysis Error
+                  </h4>
                   <p className="text-red-200">{error}</p>
                 </div>
               </div>
@@ -941,7 +1146,7 @@ const LysaInvestmentAdvisor = () => {
                 )}
               </div>
             </button>
-            
+
             {(!userData.age || holdings.length === 0) && (
               <p className="text-blue-300 text-sm mt-3">
                 Please fill in your age and add at least one holding to continue
