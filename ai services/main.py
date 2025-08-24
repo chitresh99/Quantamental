@@ -38,6 +38,10 @@ app = FastAPI(
 )
 
 # Configure CORS
+ALLOWED_ORIGINS = [
+    "https://quantamental.vercel.app"
+]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
@@ -46,6 +50,7 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"]
 )
+
 
 app.include_router(router)
 
