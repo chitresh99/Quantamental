@@ -49,7 +49,7 @@ class PortfolioHolding(BaseModel):
 class UserProfile(BaseModel):
     age: int = Field(..., ge=18, le=100)
     annual_income: float = Field(..., gt=0)
-    investment_experience: str = Field(..., regex="^(beginner|intermediate|advanced)$")
+    investment_experience: str = Field(..., pattern="^(beginner|intermediate|advanced)$")
     risk_tolerance: RiskTolerance
     investment_goals: List[InvestmentGoal]
     time_horizon: int = Field(..., ge=1, le=50, description="Investment time horizon in years")
