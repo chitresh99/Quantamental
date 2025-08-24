@@ -10,7 +10,7 @@ interface Service {
 }
 
 const services: Service[] = [
-  { title: "ML and AI Services", route: "/ml-ai" },
+  { title: "ML and AI Services", route: "/mlaiservices" },
   { title: "Developer Tools", route: "/developerdash" },
   { title: "CLI", route: "/clidash" },
 ];
