@@ -16,6 +16,107 @@ import {
   Download,
 } from "lucide-react";
 
+// Markdown Component
+const MarkdownRenderer = ({ content }: { content: string }) => {
+  const renderMarkdown = (text: string) => {
+    // Split by lines
+    const lines = text.split('\n');
+    const elements: React.ReactNode[] = [];
+    let inList = false;
+    let listItems: string[] = [];
+
+    const flushList = () => {
+      if (listItems.length > 0) {
+        elements.push(
+          <ul key={`list-${elements.length}`} className="list-disc list-inside space-y-2 mb-4 text-blue-100">
+            {listItems.map((item, i) => (
+              <li key={i} className="ml-4">{processInlineMarkdown(item)}</li>
+            ))}
+          </ul>
+        );
+        listItems = [];
+        inList = false;
+      }
+    };
+
+    const processInlineMarkdown = (line: string) => {
+      // Bold text
+      line = line.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
+      line = line.replace(/\*(.+?)\*/g, '<em class="italic">$1</em>');
+      
+      return <span dangerouslySetInnerHTML={{ __html: line }} />;
+    };
+
+    lines.forEach((line, index) => {
+      // Headers
+      if (line.startsWith('###')) {
+        flushList();
+        elements.push(
+          <h3 key={index} className="text-xl font-bold text-white mt-6 mb-3">
+            {line.replace(/^###\s*/, '')}
+          </h3>
+        );
+      } else if (line.startsWith('##')) {
+        flushList();
+        elements.push(
+          <h2 key={index} className="text-2xl font-bold text-white mt-8 mb-4">
+            {line.replace(/^##\s*/, '')}
+          </h2>
+        );
+      } else if (line.startsWith('#')) {
+        flushList();
+        elements.push(
+          <h1 key={index} className="text-3xl font-bold text-white mt-8 mb-4">
+            {line.replace(/^#\s*/, '')}
+          </h1>
+        );
+      }
+      // Horizontal rule
+      else if (line.trim() === '---') {
+        flushList();
+        elements.push(
+          <hr key={index} className="border-blue-500/30 my-6" />
+        );
+      }
+      // List items
+      else if (line.match(/^[-*]\s/)) {
+        if (!inList) {
+          inList = true;
+        }
+        listItems.push(line.replace(/^[-*]\s/, ''));
+      }
+      // Table detection
+      else if (line.includes('|')) {
+        flushList();
+        // Skip table rendering for now, just show as text
+        elements.push(
+          <p key={index} className="text-blue-200 mb-2 font-mono text-sm">
+            {line}
+          </p>
+        );
+      }
+      // Regular paragraphs
+      else if (line.trim()) {
+        flushList();
+        elements.push(
+          <p key={index} className="text-blue-100 mb-4 leading-relaxed">
+            {processInlineMarkdown(line)}
+          </p>
+        );
+      }
+      // Empty lines
+      else {
+        flushList();
+      }
+    });
+
+    flushList(); // Flush any remaining list items
+    return elements;
+  };
+
+  return <div className="markdown-content">{renderMarkdown(content)}</div>;
+};
+
 interface UserData {
   age: string;
   annual_income: string;
@@ -736,6 +837,17 @@ Diversification Score: ${analysisResult.diversification_score}/10
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Detailed Analysis Section */}
+      <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-blue-500/30 p-8 mb-8 shadow-lg">
+        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <Brain className="w-6 h-6 text-purple-300" />
+          Detailed Analysis
+        </h3>
+        <div className="bg-white/5 rounded-xl p-6 border border-blue-500/20">
+          <MarkdownRenderer content={analysisResult.analysis} />
         </div>
       </div>
 
