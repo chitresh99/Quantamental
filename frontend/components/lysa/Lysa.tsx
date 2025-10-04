@@ -593,11 +593,46 @@ const FeaturesSection = () => (
 // Results Dashboard Component
 const ResultsDashboard = ({
   analysisResult,
+  holdings,
   onNewAnalysis,
 }: {
   analysisResult: AnalysisResult;
+  holdings: Holding[];
   onNewAnalysis: () => void;
 }) => {
+  // Calculate portfolio metrics from actual holdings
+  const calculatePortfolioMetrics = () => {
+    const totalValue = holdings.reduce((sum, h) => {
+      return sum + (parseFloat(h.quantity) * parseFloat(h.current_price));
+    }, 0);
+
+    const totalCost = holdings.reduce((sum, h) => {
+      return sum + (parseFloat(h.quantity) * parseFloat(h.purchase_price));
+    }, 0);
+
+    const totalReturn = totalCost > 0 ? ((totalValue - totalCost) / totalCost) * 100 : 0;
+
+    // Calculate allocation by asset type
+    const allocation: { [key: string]: number } = {};
+    holdings.forEach(h => {
+      const value = parseFloat(h.quantity) * parseFloat(h.current_price);
+      allocation[h.asset_type] = (allocation[h.asset_type] || 0) + value;
+    });
+
+    const allocationPercentages: { [key: string]: number } = {};
+    Object.keys(allocation).forEach(type => {
+      allocationPercentages[type] = totalValue > 0 ? (allocation[type] / totalValue) * 100 : 0;
+    });
+
+    return {
+      totalValue,
+      totalReturn,
+      allocationPercentages
+    };
+  };
+
+  const metrics = calculatePortfolioMetrics();
+
   const downloadReport = () => {
     const reportContent = `
 LYSA AI INVESTMENT ADVISORY REPORT
@@ -653,7 +688,9 @@ Diversification Score: ${analysisResult.diversification_score}/10
               <Wallet className="w-5 h-5 text-blue-200" />
               <span className="text-blue-200 text-sm">Total Value</span>
             </div>
-            <span className="text-2xl font-bold text-white">$8,850</span>
+            <span className="text-2xl font-bold text-white">
+              ${metrics.totalValue.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+            </span>
           </div>
 
           <div className="bg-white/5 rounded-xl p-4 border border-blue-500/20">
@@ -662,16 +699,18 @@ Diversification Score: ${analysisResult.diversification_score}/10
               <span className="text-blue-200 text-sm">Diversification</span>
             </div>
             <span className="text-2xl font-bold text-white">
-              {analysisResult.diversification_score}/10
+              {analysisResult.diversification_score.toFixed(1)}/10
             </span>
           </div>
 
           <div className="bg-white/5 rounded-xl p-4 border border-blue-500/20">
             <div className="flex items-center gap-2 mb-2">
               <BarChart3 className="w-5 h-5 text-blue-200" />
-              <span className="text-blue-200 text-sm">Annual Return</span>
+              <span className="text-blue-200 text-sm">Total Return</span>
             </div>
-            <span className="text-2xl font-bold text-white">10.6%</span>
+            <span className={`text-2xl font-bold ${metrics.totalReturn >= 0 ? 'text-green-300' : 'text-red-300'}`}>
+              {metrics.totalReturn >= 0 ? '+' : ''}{metrics.totalReturn.toFixed(1)}%
+            </span>
           </div>
 
           <div className="bg-white/5 rounded-xl p-4 border border-blue-500/20">
@@ -709,18 +748,14 @@ Diversification Score: ${analysisResult.diversification_score}/10
           </h3>
 
           <div className="space-y-4">
-            <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl">
-              <span className="text-blue-200">Stocks</span>
-              <span className="text-white font-bold">49%</span>
-            </div>
-            <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl">
-              <span className="text-blue-200">Crypto</span>
-              <span className="text-white font-bold">51%</span>
-            </div>
-            <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl">
-              <span className="text-blue-200">Bonds</span>
-              <span className="text-white font-bold">0%</span>
-            </div>
+            {Object.entries(metrics.allocationPercentages)
+              .sort((a, b) => b[1] - a[1])
+              .map(([type, percentage]) => (
+                <div key={type} className="flex justify-between items-center p-4 bg-white/5 rounded-xl">
+                  <span className="text-blue-200 capitalize">{type}</span>
+                  <span className="text-white font-bold">{percentage.toFixed(0)}%</span>
+                </div>
+              ))}
           </div>
         </div>
 
@@ -1072,6 +1107,7 @@ const LysaInvestmentAdvisor = () => {
         <Header onNewAnalysis={() => setCurrentPage("input")} />
         <ResultsDashboard
           analysisResult={analysisResult}
+          holdings={holdings}
           onNewAnalysis={() => setCurrentPage("input")}
         />
       </div>
