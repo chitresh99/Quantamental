@@ -820,7 +820,7 @@ Diversification Score: ${analysisResult.diversification_score}/10
               <span className="text-blue-200 text-sm">Confidence</span>
             </div>
             <span className="text-2xl font-bold text-white">
-              {Math.round(analysisResult.confidence_score * 100)}%
+              {Math.round((analysisResult.confidence_score || 0) * 100)}%
             </span>
           </div>
         </div>
