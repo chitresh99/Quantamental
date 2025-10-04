@@ -1142,22 +1142,10 @@ const LysaInvestmentAdvisor = () => {
         let errorMessage = `API Error: ${response.status} ${response.statusText}`;
         try {
           const errorData = await response.json();
-          console.error("API Error Details:", errorData);
-          
-          if (errorData.detail) {
-            // FastAPI validation errors are in detail
-            if (Array.isArray(errorData.detail)) {
-              const errors = errorData.detail.map((err: any) => 
-                `${err.loc.join('.')}: ${err.msg}`
-              ).join(', ');
-              errorMessage = `Validation Error: ${errors}`;
-            } else if (typeof errorData.detail === 'string') {
-              errorMessage = `Error: ${errorData.detail}`;
-            } else {
-              errorMessage = `Error: ${JSON.stringify(errorData.detail)}`;
-            }
-          } else if (errorData.error || errorData.message) {
-            errorMessage += ` - ${errorData.error || errorData.message}`;
+          if (errorData.error || errorData.message || errorData.detail) {
+            errorMessage += ` - ${
+              errorData.error || errorData.message || errorData.detail
+            }`;
           }
         } catch (parseErr) {
           // If we can't parse the error response, use the original message
