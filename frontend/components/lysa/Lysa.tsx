@@ -820,7 +820,7 @@ Diversification Score: ${analysisResult.diversification_score}/10
               <span className="text-blue-200 text-sm">Confidence</span>
             </div>
             <span className="text-2xl font-bold text-white">
-              {Math.round((analysisResult.confidence_score || 0) * 100)}%
+              {Math.round(analysisResult.confidence_score * 100)}%
             </span>
           </div>
         </div>
@@ -837,17 +837,6 @@ Diversification Score: ${analysisResult.diversification_score}/10
               </p>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Detailed Analysis Section */}
-      <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-blue-500/30 p-8 mb-8 shadow-lg">
-        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-          <Brain className="w-6 h-6 text-purple-300" />
-          Detailed Analysis
-        </h3>
-        <div className="bg-white/5 rounded-xl p-6 border border-blue-500/20">
-          <MarkdownRenderer content={analysisResult.analysis} />
         </div>
       </div>
 
