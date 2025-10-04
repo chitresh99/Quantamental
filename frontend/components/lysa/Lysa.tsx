@@ -16,10 +16,9 @@ import {
   Download,
 } from "lucide-react";
 
-// Markdown Component
+// Markdown Component - handles both plain text and markdown
 const MarkdownRenderer = ({ content }: { content: string }) => {
   const renderMarkdown = (text: string) => {
-    // Split by lines
     const lines = text.split('\n');
     const elements: React.ReactNode[] = [];
     let inList = false;
@@ -40,15 +39,12 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
     };
 
     const processInlineMarkdown = (line: string) => {
-      // Bold text
       line = line.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
       line = line.replace(/\*(.+?)\*/g, '<em class="italic">$1</em>');
-      
       return <span dangerouslySetInnerHTML={{ __html: line }} />;
     };
 
     lines.forEach((line, index) => {
-      // Headers
       if (line.startsWith('###')) {
         flushList();
         elements.push(
@@ -70,47 +66,27 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
             {line.replace(/^#\s*/, '')}
           </h1>
         );
-      }
-      // Horizontal rule
-      else if (line.trim() === '---') {
+      } else if (line.trim() === '---') {
         flushList();
         elements.push(
           <hr key={index} className="border-blue-500/30 my-6" />
         );
-      }
-      // List items
-      else if (line.match(/^[-*]\s/)) {
-        if (!inList) {
-          inList = true;
-        }
+      } else if (line.match(/^[-*]\s/)) {
+        if (!inList) inList = true;
         listItems.push(line.replace(/^[-*]\s/, ''));
-      }
-      // Table detection
-      else if (line.includes('|')) {
-        flushList();
-        // Skip table rendering for now, just show as text
-        elements.push(
-          <p key={index} className="text-blue-200 mb-2 font-mono text-sm">
-            {line}
-          </p>
-        );
-      }
-      // Regular paragraphs
-      else if (line.trim()) {
+      } else if (line.trim()) {
         flushList();
         elements.push(
           <p key={index} className="text-blue-100 mb-4 leading-relaxed">
             {processInlineMarkdown(line)}
           </p>
         );
-      }
-      // Empty lines
-      else {
+      } else {
         flushList();
       }
     });
 
-    flushList(); // Flush any remaining list items
+    flushList();
     return elements;
   };
 
@@ -153,7 +129,6 @@ interface AnalysisResult {
   timestamp: string;
 }
 
-// Header Component
 const Header = ({ onNewAnalysis }: { onNewAnalysis?: () => void }) => (
   <div className="sticky top-0 z-50 bg-white/10 backdrop-blur-sm border-b border-blue-500/30">
     <div className="max-w-7xl mx-auto px-6 py-4">
@@ -188,7 +163,6 @@ const Header = ({ onNewAnalysis }: { onNewAnalysis?: () => void }) => (
   </div>
 );
 
-// Custom Select Component
 const CustomSelect = ({
   value,
   onChange,
@@ -224,7 +198,7 @@ const CustomSelect = ({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-slate-800/95 backdrop-blur-sm border border-blue-500/30 rounded-xl shadow-xl z-10">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-slate-800/95 backdrop-blur-sm border border-blue-500/30 rounded-xl shadow-xl z-10 max-h-60 overflow-y-auto">
           {options.map((option) => (
             <button
               key={option.value}
@@ -244,7 +218,6 @@ const CustomSelect = ({
   );
 };
 
-// Hero Section Component
 const HeroSection = () => (
   <div className="text-center mb-16">
     <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight">
@@ -261,7 +234,6 @@ const HeroSection = () => (
   </div>
 );
 
-// User Profile Form Component
 const UserProfileForm = ({
   userData,
   setUserData,
@@ -270,12 +242,11 @@ const UserProfileForm = ({
   setUserData: React.Dispatch<React.SetStateAction<UserData>>;
 }) => {
   const goalOptions = [
-    "wealth_building",
-    "retirement",
-    "education_fund",
-    "home_purchase",
-    "emergency_fund",
-    "passive_income",
+    { value: "wealth_building", label: "Wealth Building" },
+    { value: "retirement", label: "Retirement" },
+    { value: "education", label: "Education" },
+    { value: "income_generation", label: "Income Generation" },
+    { value: "capital_preservation", label: "Capital Preservation" },
   ];
 
   const handleGoalChange = (goal: string, checked: boolean) => {
@@ -404,21 +375,19 @@ const UserProfileForm = ({
         <label className="block text-blue-200 text-sm font-semibold mb-2">
           Investment Goals
         </label>
-        <div className="grid md:grid-cols-3 gap-3">
+        <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-3">
           {goalOptions.map((goal) => (
             <label
-              key={goal}
+              key={goal.value}
               className="flex items-center gap-2 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors duration-200 cursor-pointer"
             >
               <input
                 type="checkbox"
-                checked={userData.investment_goals.includes(goal)}
-                onChange={(e) => handleGoalChange(goal, e.target.checked)}
+                checked={userData.investment_goals.includes(goal.value)}
+                onChange={(e) => handleGoalChange(goal.value, e.target.checked)}
                 className="rounded border-blue-500/30 bg-white/10 text-blue-500"
               />
-              <span className="text-blue-200 capitalize">
-                {goal.replace("_", " ")}
-              </span>
+              <span className="text-blue-200 text-sm">{goal.label}</span>
             </label>
           ))}
         </div>
@@ -441,7 +410,6 @@ const UserProfileForm = ({
   );
 };
 
-// Holdings Component
 const HoldingsForm = ({
   holdings,
   setHoldings,
@@ -484,6 +452,9 @@ const HoldingsForm = ({
     { value: "crypto", label: "Crypto" },
     { value: "bond", label: "Bond" },
     { value: "etf", label: "ETF" },
+    { value: "real_estate", label: "Real Estate" },
+    { value: "commodity", label: "Commodity" },
+    { value: "cash", label: "Cash" },
   ];
 
   return (
@@ -643,7 +614,6 @@ const HoldingsForm = ({
   );
 };
 
-// Features Section Component
 const FeaturesSection = () => (
   <div className="mt-20">
     <h3 className="text-3xl font-bold text-white text-center mb-12">
@@ -691,7 +661,6 @@ const FeaturesSection = () => (
   </div>
 );
 
-// Results Dashboard Component
 const ResultsDashboard = ({
   analysisResult,
   holdings,
@@ -701,7 +670,6 @@ const ResultsDashboard = ({
   holdings: Holding[];
   onNewAnalysis: () => void;
 }) => {
-  // Calculate portfolio metrics from actual holdings
   const calculatePortfolioMetrics = () => {
     const totalValue = holdings.reduce((sum, h) => {
       return sum + (parseFloat(h.quantity) * parseFloat(h.current_price));
@@ -713,7 +681,6 @@ const ResultsDashboard = ({
 
     const totalReturn = totalCost > 0 ? ((totalValue - totalCost) / totalCost) * 100 : 0;
 
-    // Calculate allocation by asset type
     const allocation: { [key: string]: number } = {};
     holdings.forEach(h => {
       const value = parseFloat(h.quantity) * parseFloat(h.current_price);
@@ -755,17 +722,15 @@ SUGGESTED ALLOCATION:
 NEXT STEPS:
 ${analysisResult.next_steps.map((step, i) => `${i + 1}. ${step}`).join("\n")}
 
-Confidence Score: ${Math.round(analysisResult.confidence_score * 100)}%
-Diversification Score: ${analysisResult.diversification_score}/10
+Confidence Score: ${Math.round((analysisResult.confidence_score || 0) * 100)}%
+Diversification Score: ${analysisResult.diversification_score.toFixed(1)}/10
 `;
 
     const blob = new Blob([reportContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `lysa-investment-report-${
-      new Date().toISOString().split("T")[0]
-    }.txt`;
+    a.download = `lysa-investment-report-${new Date().toISOString().split("T")[0]}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -774,7 +739,6 @@ Diversification Score: ${analysisResult.diversification_score}/10
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
-      {/* Executive Summary Card */}
       <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-blue-500/30 p-8 mb-8 shadow-lg">
         <div className="flex items-center gap-3 mb-6">
           <TrendingUp className="w-8 h-8 text-blue-200" />
@@ -820,7 +784,7 @@ Diversification Score: ${analysisResult.diversification_score}/10
               <span className="text-blue-200 text-sm">Confidence</span>
             </div>
             <span className="text-2xl font-bold text-white">
-              {Math.round(analysisResult.confidence_score * 100)}%
+              {Math.round((analysisResult.confidence_score || 0) * 100)}%
             </span>
           </div>
         </div>
@@ -840,20 +804,29 @@ Diversification Score: ${analysisResult.diversification_score}/10
         </div>
       </div>
 
-      {/* Current vs Recommended Allocation */}
+      {/* Detailed Analysis Section */}
+      <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-blue-500/30 p-8 mb-8 shadow-lg">
+        <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+          <Brain className="w-6 h-6 text-purple-300" />
+          Detailed Analysis
+        </h3>
+        <div className="bg-white/5 rounded-xl p-6 border border-blue-500/20">
+          <MarkdownRenderer content={analysisResult.analysis} />
+        </div>
+      </div>
+
       <div className="grid lg:grid-cols-2 gap-8 mb-8">
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-blue-500/30 p-8 shadow-lg">
           <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
             <PieChart className="w-6 h-6 text-blue-200" />
             Current Allocation
           </h3>
-
           <div className="space-y-4">
             {Object.entries(metrics.allocationPercentages)
               .sort((a, b) => b[1] - a[1])
               .map(([type, percentage]) => (
                 <div key={type} className="flex justify-between items-center p-4 bg-white/5 rounded-xl">
-                  <span className="text-blue-200 capitalize">{type}</span>
+                  <span className="text-blue-200 capitalize">{type.replace('_', ' ')}</span>
                   <span className="text-white font-bold">{percentage.toFixed(0)}%</span>
                 </div>
               ))}
@@ -865,7 +838,6 @@ Diversification Score: ${analysisResult.diversification_score}/10
             <Target className="w-6 h-6 text-green-300" />
             Recommended Allocation
           </h3>
-
           <div className="space-y-4">
             <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl">
               <span className="text-blue-200">Stocks</span>
@@ -889,13 +861,11 @@ Diversification Score: ${analysisResult.diversification_score}/10
         </div>
       </div>
 
-      {/* Recommendations */}
       <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-blue-500/30 p-8 mb-8 shadow-lg">
         <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
           <CheckCircle className="w-6 h-6 text-green-300" />
           Key Recommendations
         </h3>
-
         <div className="grid md:grid-cols-2 gap-4">
           {analysisResult.recommendations.map((rec, index) => (
             <div
@@ -909,13 +879,11 @@ Diversification Score: ${analysisResult.diversification_score}/10
         </div>
       </div>
 
-      {/* Next Steps */}
       <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-blue-500/30 p-8 shadow-lg">
         <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
           <Calendar className="w-6 h-6 text-purple-300" />
           Action Plan
         </h3>
-
         <div className="space-y-4">
           {analysisResult.next_steps.map((step, index) => (
             <div
@@ -951,7 +919,6 @@ Diversification Score: ${analysisResult.diversification_score}/10
   );
 };
 
-// Main Component
 const LysaInvestmentAdvisor = () => {
   const [currentPage, setCurrentPage] = useState<"input" | "results">("input");
   const [userData, setUserData] = useState<UserData>({
@@ -965,56 +932,17 @@ const LysaInvestmentAdvisor = () => {
     additional_context: "",
   });
   const [holdings, setHoldings] = useState<Holding[]>([]);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(
-    null
-  );
+  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Sample analysis data for demonstration
-  const sampleAnalysis: AnalysisResult = {
-    analysis:
-      "**Lysa Wealth Advisor – Investment Advisory Report**\n**Client:** 28‑year‑old young professional\n**Date:** 24 Aug 2025\n\n---\n\n## Executive Summary\n\nYour current portfolio is heavily tilted toward high-growth tech stocks and crypto, creating significant concentration risk. While this aggressive approach aligns with your risk tolerance and 35-year horizon, diversification improvements are needed to optimize long-term wealth building.\n\n**Key Findings:**\n- Total Portfolio Value: $8,850\n- Current Allocation: 49% stocks, 51% crypto\n- Diversification Score: 5.0/10\n- Annualized Return: 10.6%\n- Risk Level: High\n\n**Bottom Line:** Reduce crypto exposure to 10-15%, diversify equity holdings across sectors and geographies, and add a modest bond allocation for volatility management.",
-    recommendations: [
-      "Reduce Bitcoin allocation from 51% to 10-15% of total portfolio",
-      "Diversify equity holdings beyond tech sector concentration",
-      "Add broad market index funds for better diversification",
-      "Consider adding 10-20% bond allocation for volatility dampening",
-      "Implement systematic rebalancing schedule (quarterly)",
-    ],
-    risk_assessment:
-      "High concentration risk due to 51% crypto allocation and tech sector focus. While aggressive approach suits your profile, current structure creates unnecessary volatility.",
-    diversification_score: 5.0,
-    suggested_allocations: {
-      stocks: 70,
-      bonds: 20,
-      alternatives: 10,
-    },
-    next_steps: [
-      "Rebalance portfolio within 30 days",
-      "Open tax-advantaged accounts (401k, IRA)",
-      "Set up automated investing schedule",
-      "Review portfolio quarterly",
-      "Build 3-6 month emergency fund",
-    ],
-    confidence_score: 0.85,
-    timestamp: "2025-08-24T16:56:20.509811",
-  };
 
   const handleAnalyze = async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // Validate required fields
-      if (
-        !userData.age ||
-        !userData.annual_income ||
-        !userData.investment_experience ||
-        !userData.risk_tolerance ||
-        !userData.time_horizon ||
-        !userData.liquidity_needs
-      ) {
+      if (!userData.age || !userData.annual_income || !userData.investment_experience || 
+          !userData.risk_tolerance || !userData.time_horizon || !userData.liquidity_needs) {
         throw new Error("Please fill in all required fields");
       }
 
@@ -1022,31 +950,19 @@ const LysaInvestmentAdvisor = () => {
         throw new Error("Please add at least one holding");
       }
 
-      // Validate holdings data
       for (const holding of holdings) {
-        if (
-          !holding.symbol ||
-          !holding.quantity ||
-          !holding.current_price ||
-          !holding.purchase_price
-        ) {
-          throw new Error(
-            "Please fill in all holding fields (symbol, quantity, current price, purchase price)"
-          );
+        if (!holding.symbol || !holding.quantity || !holding.current_price || !holding.purchase_price) {
+          throw new Error("Please fill in all holding fields (symbol, quantity, current price, purchase price)");
         }
       }
 
-      // Prepare the request data with proper validation
       const requestData = {
         user_profile: {
           age: parseInt(userData.age),
           annual_income: parseInt(userData.annual_income),
           investment_experience: userData.investment_experience,
           risk_tolerance: userData.risk_tolerance,
-          investment_goals:
-            userData.investment_goals.length > 0
-              ? userData.investment_goals
-              : ["wealth_building"],
+          investment_goals: userData.investment_goals.length > 0 ? userData.investment_goals : ["wealth_building"],
           time_horizon: parseInt(userData.time_horizon),
           liquidity_needs: parseFloat(userData.liquidity_needs),
         },
@@ -1057,46 +973,28 @@ const LysaInvestmentAdvisor = () => {
           quantity: parseFloat(holding.quantity),
           current_price: parseFloat(holding.current_price),
           purchase_price: parseFloat(holding.purchase_price),
-          purchase_date:
-            holding.purchase_date || new Date().toISOString().split("T")[0],
+          purchase_date: holding.purchase_date || new Date().toISOString().split("T")[0],
         })),
         additional_context: userData.additional_context || "",
       };
 
-      // Validate parsed numbers
-      if (
-        isNaN(requestData.user_profile.age) ||
-        requestData.user_profile.age < 18 ||
-        requestData.user_profile.age > 100
-      ) {
+      if (isNaN(requestData.user_profile.age) || requestData.user_profile.age < 18 || requestData.user_profile.age > 100) {
         throw new Error("Please enter a valid age between 18 and 100");
       }
 
-      if (
-        isNaN(requestData.user_profile.annual_income) ||
-        requestData.user_profile.annual_income < 0
-      ) {
+      if (isNaN(requestData.user_profile.annual_income) || requestData.user_profile.annual_income < 0) {
         throw new Error("Please enter a valid annual income");
       }
 
-      if (
-        isNaN(requestData.user_profile.time_horizon) ||
-        requestData.user_profile.time_horizon < 1
-      ) {
+      if (isNaN(requestData.user_profile.time_horizon) || requestData.user_profile.time_horizon < 1) {
         throw new Error("Please enter a valid time horizon (at least 1 year)");
       }
 
-      if (
-        isNaN(requestData.user_profile.liquidity_needs) ||
-        requestData.user_profile.liquidity_needs < 0 ||
-        requestData.user_profile.liquidity_needs > 100
-      ) {
-        throw new Error(
-          "Please enter a valid liquidity needs percentage (0-100)"
-        );
+      if (isNaN(requestData.user_profile.liquidity_needs) || requestData.user_profile.liquidity_needs < 0 || 
+          requestData.user_profile.liquidity_needs > 100) {
+        throw new Error("Please enter a valid liquidity needs percentage (0-100)");
       }
 
-      // Validate holdings
       for (const holding of requestData.holdings) {
         if (isNaN(holding.quantity) || holding.quantity <= 0) {
           throw new Error(`Invalid quantity for ${holding.symbol}`);
@@ -1109,32 +1007,35 @@ const LysaInvestmentAdvisor = () => {
         }
       }
 
-      console.log(
-        "Sending request data:",
-        JSON.stringify(requestData, null, 2)
-      );
+      console.log("Sending request data:", JSON.stringify(requestData, null, 2));
 
-      // Call the backend API
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_AI_URL}/analyze-portfolio`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        }
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_AI_SERVICE}/analyze-portfolio`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
 
       if (!response.ok) {
-        // Try to get more detailed error information
         let errorMessage = `API Error: ${response.status} ${response.statusText}`;
         try {
           const errorData = await response.json();
-          if (errorData.error || errorData.message || errorData.detail) {
-            errorMessage += ` - ${
-              errorData.error || errorData.message || errorData.detail
-            }`;
+          console.error("API Error Details:", errorData);
+          
+          if (errorData.detail) {
+            if (Array.isArray(errorData.detail)) {
+              const errors = errorData.detail.map((err: any) => 
+                `${err.loc.join('.')}: ${err.msg}`
+              ).join(', ');
+              errorMessage = `Validation Error: ${errors}`;
+            } else if (typeof errorData.detail === 'string') {
+              errorMessage = `Error: ${errorData.detail}`;
+            } else {
+              errorMessage = `Error: ${JSON.stringify(errorData.detail)}`;
+            }
+          } else if (errorData.error || errorData.message) {
+            errorMessage += ` - ${errorData.error || errorData.message}`;
           }
         } catch (parseErr) {
           // If we can't parse the error response, use the original message
@@ -1147,22 +1048,7 @@ const LysaInvestmentAdvisor = () => {
       setCurrentPage("results");
     } catch (err) {
       console.error("Analysis error:", err);
-      // For demo purposes, use sample data when API is not available
-      if (
-        err instanceof Error &&
-        (err.message.includes("fetch") ||
-          err.message.includes("Failed to fetch"))
-      ) {
-        console.log("API not available, using sample data for demo");
-        setAnalysisResult(sampleAnalysis);
-        setCurrentPage("results");
-      } else {
-        setError(
-          err instanceof Error
-            ? err.message
-            : "Failed to analyze portfolio. Please check your connection and try again."
-        );
-      }
+      setError(err instanceof Error ? err.message : "Failed to analyze portfolio. Please check your connection and try again.");
     } finally {
       setIsLoading(false);
     }
@@ -1174,11 +1060,10 @@ const LysaInvestmentAdvisor = () => {
       annual_income: "75000",
       investment_experience: "beginner",
       risk_tolerance: "aggressive",
-      investment_goals: ["wealth_building"],
+      investment_goals: ["wealth_building", "retirement"],
       time_horizon: "35",
       liquidity_needs: "5.0",
-      additional_context:
-        "Young professional looking to build wealth aggressively over the long term.",
+      additional_context: "Young professional looking to build wealth aggressively over the long term.",
     });
     setHoldings([
       {
@@ -1191,12 +1076,21 @@ const LysaInvestmentAdvisor = () => {
         purchase_date: "2024-03-01",
       },
       {
+        symbol: "NVDA",
+        name: "NVIDIA Corporation",
+        asset_type: "stock",
+        quantity: "5",
+        current_price: "450.0",
+        purchase_price: "400.0",
+        purchase_date: "2024-02-15",
+      },
+      {
         symbol: "BTC",
         name: "Bitcoin",
         asset_type: "crypto",
-        quantity: "0.15",
-        current_price: "43500.0",
-        purchase_price: "38000.0",
+        quantity: "0.1",
+        current_price: "45000.0",
+        purchase_price: "42000.0",
         purchase_date: "2024-01-15",
       },
     ]);
@@ -1218,25 +1112,15 @@ const LysaInvestmentAdvisor = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600">
       <Header />
-
-      {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-6 py-20">
         <HeroSection />
-
-        {/* Input Form */}
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-blue-500/30 p-8 shadow-lg">
           <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
             <DollarSign className="w-6 h-6 text-green-300" />
             Investment Profile & Holdings
           </h3>
-
-          {/* User Profile Section */}
           <UserProfileForm userData={userData} setUserData={setUserData} />
-
-          {/* Holdings Section */}
           <HoldingsForm holdings={holdings} setHoldings={setHoldings} />
-
-          {/* Sample Data Button */}
           <div className="text-center mb-8">
             <button
               onClick={loadSampleData}
@@ -1245,23 +1129,17 @@ const LysaInvestmentAdvisor = () => {
               Load Sample Data
             </button>
           </div>
-
-          {/* Error Display */}
           {error && (
             <div className="mb-8 bg-red-500/20 backdrop-blur-sm rounded-xl border border-red-500/30 p-6">
               <div className="flex items-center gap-3">
                 <AlertTriangle className="w-6 h-6 text-red-300" />
                 <div>
-                  <h4 className="text-lg font-semibold text-red-300">
-                    Analysis Error
-                  </h4>
+                  <h4 className="text-lg font-semibold text-red-300">Analysis Error</h4>
                   <p className="text-red-200">{error}</p>
                 </div>
               </div>
             </div>
           )}
-
-          {/* Analyze Button */}
           <div className="text-center">
             <button
               onClick={handleAnalyze}
@@ -1283,7 +1161,6 @@ const LysaInvestmentAdvisor = () => {
                 )}
               </div>
             </button>
-
             {(!userData.age || holdings.length === 0) && (
               <p className="text-blue-300 text-sm mt-3">
                 Please fill in your age and add at least one holding to continue
@@ -1291,7 +1168,6 @@ const LysaInvestmentAdvisor = () => {
             )}
           </div>
         </div>
-
         <FeaturesSection />
       </div>
     </div>
