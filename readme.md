@@ -1,4 +1,4 @@
-# Quantamental (WIP)
+# Quantamental
 
 ## Overview
 
@@ -33,7 +33,7 @@ Whether you want to compare stock prices using multiple quant algorithms, analyz
 
 ## Vision
 
-To provide **a one-stop hub for quants** by combining analytics, AI, and market intelligence — making quantitative research more **accessible, efficient, and innovative**.
+To provide **a one-stop hub for quants** by combining analytics, AI, and market intelligence making quantitative research more **accessible, efficient, and innovative**.
 
 ---
 ## Disclaimer
