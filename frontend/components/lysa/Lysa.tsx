@@ -1009,7 +1009,7 @@ const LysaInvestmentAdvisor = () => {
 
       console.log("Sending request data:", JSON.stringify(requestData, null, 2));
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_AI_SERVICE}/analyze-portfolio`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_AI_URL}/analyze-portfolio`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
