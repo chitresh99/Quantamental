@@ -854,19 +854,6 @@ Diversification Score: ${analysisResult.diversification_score.toFixed(1)}/10
           </div>
         </div>
 
-        {analysisResult.risk_assessment && analysisResult.risk_assessment.trim() && (
-          <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-xl p-6 border border-yellow-500/30">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-6 h-6 text-yellow-300 mt-1 flex-shrink-0" />
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-yellow-300 mb-4">
-                  Key Insight
-                </h3>
-                <MarkdownRenderer content={analysisResult.risk_assessment} />
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Detailed Analysis Section */}
@@ -1109,9 +1096,6 @@ const LysaInvestmentAdvisor = () => {
       }
 
       const result = await response.json();
-      console.log("API Response:", result);
-      console.log("Risk Assessment:", result.risk_assessment);
-      console.log("Risk Assessment Length:", result.risk_assessment?.length);
       setAnalysisResult(result);
       setCurrentPage("results");
     } catch (err) {
