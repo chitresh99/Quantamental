@@ -16,13 +16,15 @@ import {
   Download,
 } from "lucide-react";
 
-// Markdown Component - handles both plain text and markdown
+// Markdown Component - handles both plain text and markdown including tables
 const MarkdownRenderer = ({ content }: { content: string }) => {
   const renderMarkdown = (text: string) => {
     const lines = text.split('\n');
     const elements: React.ReactNode[] = [];
     let inList = false;
     let listItems: string[] = [];
+    let inTable = false;
+    let tableLines: string[] = [];
 
     const flushList = () => {
       if (listItems.length > 0) {
@@ -38,6 +40,44 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
       }
     };
 
+    const flushTable = () => {
+      if (tableLines.length > 0) {
+        const headers = tableLines[0].split('|').filter(cell => cell.trim()).map(h => h.trim());
+        const rows = tableLines.slice(2).map(row => 
+          row.split('|').filter(cell => cell.trim()).map(cell => cell.trim())
+        );
+
+        elements.push(
+          <div key={`table-${elements.length}`} className="overflow-x-auto mb-6">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="border-b-2 border-blue-400/40">
+                  {headers.map((header, i) => (
+                    <th key={i} className="px-4 py-3 text-left text-white font-bold bg-white/10 first:rounded-tl-lg last:rounded-tr-lg">
+                      {processInlineMarkdown(header)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row, rowIndex) => (
+                  <tr key={rowIndex} className="border-b border-blue-500/20 hover:bg-white/5 transition-colors">
+                    {row.map((cell, cellIndex) => (
+                      <td key={cellIndex} className="px-4 py-3 text-blue-100">
+                        {processInlineMarkdown(cell)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+        tableLines = [];
+        inTable = false;
+      }
+    };
+
     const processInlineMarkdown = (line: string) => {
       line = line.replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
       line = line.replace(/\*(.+?)\*/g, '<em class="italic">$1</em>');
@@ -45,8 +85,14 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
     };
 
     lines.forEach((line, index) => {
-      if (line.startsWith('###')) {
+      // Check if line is part of a table
+      if (line.includes('|') && line.trim().length > 0) {
         flushList();
+        if (!inTable) inTable = true;
+        tableLines.push(line);
+      } else if (line.startsWith('###')) {
+        flushList();
+        flushTable();
         elements.push(
           <h3 key={index} className="text-xl font-bold text-white mt-6 mb-3">
             {line.replace(/^###\s*/, '')}
@@ -54,6 +100,7 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
         );
       } else if (line.startsWith('##')) {
         flushList();
+        flushTable();
         elements.push(
           <h2 key={index} className="text-2xl font-bold text-white mt-8 mb-4">
             {line.replace(/^##\s*/, '')}
@@ -61,6 +108,7 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
         );
       } else if (line.startsWith('#')) {
         flushList();
+        flushTable();
         elements.push(
           <h1 key={index} className="text-3xl font-bold text-white mt-8 mb-4">
             {line.replace(/^#\s*/, '')}
@@ -68,14 +116,17 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
         );
       } else if (line.trim() === '---') {
         flushList();
+        flushTable();
         elements.push(
           <hr key={index} className="border-blue-500/30 my-6" />
         );
       } else if (line.match(/^[-*]\s/)) {
+        flushTable();
         if (!inList) inList = true;
         listItems.push(line.replace(/^[-*]\s/, ''));
       } else if (line.trim()) {
         flushList();
+        flushTable();
         elements.push(
           <p key={index} className="text-blue-100 mb-4 leading-relaxed">
             {processInlineMarkdown(line)}
@@ -83,10 +134,12 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
         );
       } else {
         flushList();
+        flushTable();
       }
     });
 
     flushList();
+    flushTable();
     return elements;
   };
 
@@ -792,13 +845,11 @@ Diversification Score: ${analysisResult.diversification_score.toFixed(1)}/10
         <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-xl p-6 border border-yellow-500/30">
           <div className="flex items-start gap-3">
             <AlertTriangle className="w-6 h-6 text-yellow-300 mt-1 flex-shrink-0" />
-            <div>
-              <h3 className="text-xl font-bold text-yellow-300 mb-2">
+            <div className="flex-1">
+              <h3 className="text-xl font-bold text-yellow-300 mb-4">
                 Key Insight
               </h3>
-              <p className="text-yellow-100 leading-relaxed">
-                {analysisResult.risk_assessment}
-              </p>
+              <MarkdownRenderer content={analysisResult.risk_assessment} />
             </div>
           </div>
         </div>
