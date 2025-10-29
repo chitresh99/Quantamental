@@ -42,18 +42,30 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
 
     const flushTable = () => {
       if (tableLines.length > 0) {
-        const headers = tableLines[0].split('|').filter(cell => cell.trim()).map(h => h.trim());
-        const rows = tableLines.slice(2).map(row => 
+        // Filter out separator lines (lines with only dashes, pipes, and spaces)
+        const contentLines = tableLines.filter(line => {
+          const cleaned = line.replace(/\|/g, '').replace(/\s/g, '').replace(/-/g, '');
+          return cleaned.length > 0;
+        });
+
+        if (contentLines.length < 2) {
+          tableLines = [];
+          inTable = false;
+          return;
+        }
+
+        const headers = contentLines[0].split('|').filter(cell => cell.trim()).map(h => h.trim());
+        const rows = contentLines.slice(1).map(row => 
           row.split('|').filter(cell => cell.trim()).map(cell => cell.trim())
-        );
+        ).filter(row => row.length > 0);
 
         elements.push(
           <div key={`table-${elements.length}`} className="overflow-x-auto mb-6">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="border-b-2 border-blue-400/40">
+                <tr className="border-b-2 border-yellow-400/40">
                   {headers.map((header, i) => (
-                    <th key={i} className="px-4 py-3 text-left text-white font-bold bg-white/10 first:rounded-tl-lg last:rounded-tr-lg">
+                    <th key={i} className="px-4 py-3 text-left text-yellow-300 font-bold bg-yellow-500/10 first:rounded-tl-lg last:rounded-tr-lg">
                       {processInlineMarkdown(header)}
                     </th>
                   ))}
@@ -61,9 +73,9 @@ const MarkdownRenderer = ({ content }: { content: string }) => {
               </thead>
               <tbody>
                 {rows.map((row, rowIndex) => (
-                  <tr key={rowIndex} className="border-b border-blue-500/20 hover:bg-white/5 transition-colors">
+                  <tr key={rowIndex} className="border-b border-yellow-500/20 hover:bg-yellow-500/5 transition-colors">
                     {row.map((cell, cellIndex) => (
-                      <td key={cellIndex} className="px-4 py-3 text-blue-100">
+                      <td key={cellIndex} className="px-4 py-3 text-yellow-100">
                         {processInlineMarkdown(cell)}
                       </td>
                     ))}
